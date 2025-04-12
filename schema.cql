@@ -26,19 +26,30 @@
 
 
 
-CREATE TABLE IF NOT EXISTS cassandradata.silver_sales (
-    order_id uuid PRIMARY KEY,
-    region text,
-    country text,
-    item_type text,
-    sales_channel text,
-    order_priority text,
-    order_date text
+     CREATE TABLE IF NOT EXISTS cassandradata.sales_data (
+    Region TEXT,
+    Country TEXT,
+    Item_Type TEXT,
+    Sales_Channel TEXT,
+    Order_Priority TEXT,
+    Order_Date DATE,
+    Order_ID BIGINT,
+    Ship_Date DATE,
+    Units_Sold INT,
+    Unit_Price DECIMAL,
+    Unit_Cost DECIMAL,
+    Total_Revenue DECIMAL,
+    Total_Cost DECIMAL,
+    Total_Profit DECIMAL,
+    PRIMARY KEY (Order_ID)
 );
 
-
-INSERT INTO cassandradata.silver_sales (order_id, region, country, item_type, sales_channel, order_priority, order_date)
-        VALUES (%s, %s, %s, %s, %s, %s, %s);
+ INSERT INTO sales_data (
+            Region, Country, Item_Type, Sales_Channel,
+            Order_Priority, Order_Date, Order_ID, Ship_Date,
+            Units_Sold, Unit_Price, Unit_Cost,
+            Total_Revenue, Total_Cost, Total_Profit
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 
 	SELECT * FROM cassandradata.silver_sales;
 
