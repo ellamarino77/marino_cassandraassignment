@@ -78,11 +78,11 @@ print(sorted_df)
 
 session.set_keyspace('cassandradata')
 
-# Make sure dates are in datetime.date format
+
 df['Order Date'] = pd.to_datetime(df['Order Date']).dt.date
 df['Ship Date'] = pd.to_datetime(df['Ship Date']).dt.date
 
-# Insert each row into Cassandra
+
 for _, row in df.iterrows():
     session.execute("""
         INSERT INTO sales_data (
@@ -103,14 +103,13 @@ from cassandra.cluster import Cluster
 from uuid import uuid4
 from datetime import datetime
 
-# Load the data from CSV (same as bronze)
+
 file_path = 'https://raw.githubusercontent.com/gchandra10/filestorage/refs/heads/main/sales_100.csv'
 df = pd.read_csv(file_path)
 
-# Remove duplicates and nulls
+
 silver_df = df.drop_duplicates().dropna()
 
-# Convert date columns properly
 def parse_date(date_str):
     try:
         return datetime.strptime(date_str, "%m/%d/%Y")
@@ -120,7 +119,7 @@ def parse_date(date_str):
 silver_df['Order Date'] = silver_df['Order Date'].apply(parse_date)
 silver_df['Ship Date'] = silver_df['Ship Date'].apply(parse_date)
 
-# Drop any rows where date parsing failed
+
 silver_df = silver_df[silver_df['Order Date'].notnull() & silver_df['Ship Date'].notnull()]
 
 
@@ -143,9 +142,9 @@ if session:
   print('Connected!')
 else:
   print("An error occurred.")
-session.set_keyspace('cassandradata')  # Or whatever your actual keyspace is
+session.set_keyspace('cassandradata') 
 
-# Create the silver table
+
 session.execute("""
     CREATE TABLE IF NOT EXISTS silver_sales (
         order_id uuid PRIMARY KEY,
@@ -165,7 +164,7 @@ session.execute("""
     )
 """)
 
-# Insert cleaned data
+
 for _, row in silver_df.iterrows():
     session.execute("""
         INSERT INTO silver_sales (
